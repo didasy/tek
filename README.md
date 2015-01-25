@@ -32,7 +32,7 @@ func main() {
 Or just open `test/sample.go`
 
 ### Benchmark
-Using i3-3217U @1.8GHz with 370 unique words sample from the sample.txt provided and command `go test -bench . -benchtime=5s -cpu 4`:
+Using i3-3217U @1.8GHz with 370 total words from the sample.txt provided and command `go test -bench . -benchtime=5s -cpu 4`:
 ```
 BenchmarkGetTag-4            300          27111330 ns/op
 ```
