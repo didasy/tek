@@ -4,18 +4,25 @@ tek is an automatic tagging library for Go.
 package tek
 
 import (
+	"os"
 	"math"
 	"strings"
 	"unicode"
+	"io/ioutil"
+	"encoding/json"
 )
 
 const (
-	VERSION = "0.0.1"
+	VERSION = "0.0.2"
 )
 
 // need to expand more and rearranged
 var indonesianStopWords []string = []string{
 	"di",
+	"dari",
+	"juga",
+	"lalu",
+	"dengan",
 	"ke",
 	"ini",
 	"itu",
@@ -34,9 +41,13 @@ var indonesianStopWords []string = []string{
 	"jadi",
 	"akan",
 	"tetapi",
+	"begitupun",
 	"bilamana",
 	"bagaimanapun",
 	"apa",
+	"untuk",
+	"kepada",
+	"menurut",
 	"siapa",
 	"dimana",
 	"kapan",
@@ -162,12 +173,31 @@ func SetStopWords(s []string) {
 	stopWords = s
 }
 
+// need to tweak these values later
+var modifier map[string]float64 = map[string]float64{ "nama": 2.5, "nomina" : 1.75, "verba" : 1, "adjektiva" : 0.5, "adverbia" : 0.75, "numeralia" : 0.5 }
+
+type Vocab struct {
+	Id int `json:id"`
+	Word string `json:"word"`
+	Type string `json:"type"`
+}
+
+var pos []*Vocab
+
 // Set language used, defaulted to english if not called. If argument is not "id" or "en", empty stop words will be used
 // For now only support Indonesian and English stop words
-func SetLang(lang string) {
-	switch lang {
+func SetLang(l string) error {
+	switch l {
 	case "id":
 		stopWords = indonesianStopWords
+		fb, err := ioutil.ReadFile(os.Getenv("GOPATH") + "/src/github.com/JesusIslam/tek/pos_id.json")
+		if err != nil {
+			return err
+		}
+		err = json.Unmarshal(fb, &pos)
+		if err != nil {
+			return err
+		}
 	break
 	case "en":
 		stopWords = englishStopWords
@@ -177,6 +207,8 @@ func SetLang(lang string) {
 		stopWords = []string{}
 	break
 	}
+	lang = l
+	return nil
 }
 
 // The main method of this package, return a slice of *Info struct, sorted by their weight descending.
@@ -184,7 +216,7 @@ func GetTags(text string, num int) []*Info {
 	// sequential ops, cannot go parallel
 	dict := createDictionary(text)
 	seq := createSeqDict(dict)
-	// we could go concurrent here (tests shows the speed increase is up to 30% from 95~ms to 65~ms per op using 4 cores)
+	// we could go concurrent here
 	rmStopWordsChan := make(chan []string)
 	createSentencesChan := make(chan [][]string)
 	defer close(rmStopWordsChan)
@@ -225,7 +257,24 @@ func GetTags(text string, num int) []*Info {
 			}
 		}
 		termsInfo[i].Tf = count / termsCount
-		termsInfo[i].Tfidf = count / termsCount * term.Idf
+		termsInfo[i].Tfidf = termsInfo[i].Tf * term.Idf
+	}
+	if lang == "id" {
+		for i, term := range termsInfo {
+			for _, vocab := range pos {
+				if term.Term != vocab.Word {
+					termsInfo[i].Tfidf += termsInfo[i].Tfidf * modifier["nama"]
+					break
+				}
+				if vocab.Word == term.Term {
+					if vocab.Type != "lain-lain" || vocab.Type != "pronomina" || vocab.Type != "interjeksi" || vocab.Type != "preposisi" {
+						termsInfo[i].Tfidf += termsInfo[i].Tfidf * modifier[vocab.Type]
+						break
+					}
+					break
+				}
+			} 
+		}
 	}
 	// sort descending by tfidf
 	for i, v := range termsInfo {
@@ -322,6 +371,7 @@ func removeStopWords(seq []string, StopWords []string, rmStopWordsChan chan<- []
 		for _, x := range StopWords {
 			if v == x {
 				stopWord = true
+				break
 			}
 		}
 		if !stopWord {
