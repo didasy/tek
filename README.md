@@ -1,6 +1,7 @@
 # tek
 ### A golang package to get tags of an article
 ----------------------------------------------
+[![GoDoc](https://godoc.org/github.com/JesusIslam/tek?status.svg)](https://godoc.org/github.com/JesusIslam/tek)
 
 ### Installation
 `go get github.com/JesusIslam/tek`
