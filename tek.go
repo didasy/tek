@@ -174,7 +174,8 @@ func SetStopWords(s []string) {
 }
 
 // need to tweak these values later
-var modifier map[string]float64 = map[string]float64{ "nama": 2.5, "nomina" : 1.75, "verba" : 1, "adjektiva" : 0.5, "adverbia" : 0.75, "numeralia" : 0.5 }
+// var modifier map[string]float64 = map[string]float64{ "nama": 2.5, "nomina" : 1.75, "verba" : 1, "adjektiva" : 0.5, "adverbia" : 0.75, "numeralia" : 0.5 }
+var modifier map[string]float64 = map[string]float64{ "nama": 3.5, "nomina" : 3.0, "verba" : 2.0, "adjektiva" : 1.0, "adverbia" : 0.25, "numeralia" : 0.5 }
 
 type Vocab struct {
 	Id int `json:id"`
@@ -284,6 +285,10 @@ func GetTags(text string, num int) []*Info {
 			j -= 1
 		}
 		termsInfo[j+1] = v
+	}
+	// out of range error guard
+	if num >= len(termsInfo) {
+		num = len(termsInfo)
 	}
 	// return only N number of tags
 	result := make([]*Info, num)
