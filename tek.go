@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	VERSION = "0.0.2"
+	VERSION = "0.1.0"
 )
 
 // need to expand more and rearranged
@@ -212,6 +212,71 @@ func SetLang(l string) error {
 	return nil
 }
 
+type Job struct {
+	idx int
+	termsCount float64
+	term string
+	idf float64
+	tf float64
+	tfidf float64
+}
+
+func findIdf(job *Job, sentences [][]string, done chan<- *Job) {
+	count := 0.0
+	for _, sen := range sentences {
+		found := false
+		for _, word := range sen {
+			if job.term == word {
+				found = true
+			}
+		}
+		if found {
+			count++
+		}
+	}
+	job.idf = math.Log(job.termsCount / count)
+	done <- job
+}
+
+func findTfidf(job *Job, sentences [][]string, done chan<- *Job) {
+	count := 0.0
+	for _, sen := range sentences {
+		for _, word := range sen {
+			word = sanitizeWord(word)
+			if job.term == word {
+				count++
+			}
+		}
+	}
+	job.tf = count / job.termsCount
+	job.tfidf = job.tf * job.idf
+	done <- job
+}
+
+func modifyTfidfId(job *Job, pos []*Vocab, done chan<- *Job) {
+	for _, vocab := range pos {
+		if job.term != vocab.Word {
+			job.tfidf += job.tfidf * modifier["nama"]
+			break
+		}
+		if vocab.Word == job.term {
+			if vocab.Type != "lain-lain" || vocab.Type != "pronomina" || vocab.Type != "interjeksi" || vocab.Type != "preposisi" {
+				job.tfidf += job.tfidf * modifier[vocab.Type]
+				break
+			}
+			break
+		}
+	}
+	done <- job
+}
+
+type Info struct {
+	Term string
+	Idf float64
+	Tf float64
+	Tfidf float64
+}
+
 // The main method of this package, return a slice of *Info struct, sorted by their weight descending.
 func GetTags(text string, num int) []*Info {
 	// sequential ops, cannot go parallel
@@ -228,54 +293,99 @@ func GetTags(text string, num int) []*Info {
 	seq = <- rmStopWordsChan
 	// end
 	termsCount := float64(len(flatten(sens)))
-	var termsInfo []*Info 
-	for _, term := range seq {
+	
+	// More concurrency below
+
+	// original idf function
+	// var termsInfo []*Info
+	// for _, term := range seq {
 		// find idf of each term by counting word occurence first
-		count := 0.0
-		for _, sen := range sens {
-			found := false
-			for _, word := range sen {
-				if term == word {
-					found = true
-				}
-			}
-			if found {
-				count++
-			}
-		}
-		idf := math.Log(termsCount / count)
-		termsInfo = append(termsInfo, &Info{term, idf, 0.0, 0.0})
+		// count := 0.0
+		// for _, sen := range sens {
+		// 	found := false
+		// 	for _, word := range sen {
+		// 		if term == word {
+		// 			found = true
+		// 		}
+		// 	}
+		// 	if found {
+		// 		count++
+		// 	}
+		// }
+		// idf := math.Log(termsCount / count)
+		// termsInfo = append(termsInfo, &Info{term, idf, 0.0, 0.0})
+	// }
+
+	// Parallelize the original function
+	jobsChan := make(chan *Job, len(seq))
+	defer close(jobsChan)
+	termsInfo := make([]*Info, len(seq))
+	for i, term := range seq {
+		job := &Job{i, termsCount, term, 0.0, 0.0, 0.0}
+		go findIdf(job, sens, jobsChan)
 	}
+	for range termsInfo {
+		completedJob := <- jobsChan
+		termsInfo[completedJob.idx] = &Info{completedJob.term, completedJob.idf, 0.0, 0.0}
+	}
+	// 
+
+	// original tf-idf function
 	// find each word their tf-idf
+	// for i, term := range termsInfo {
+	// 	var count float64
+	// 	for _, sen := range sens {
+	// 		for _, word := range sen {
+	// 			word = sanitizeWord(word)
+	// 			if term.Term == word {
+	// 				count++
+	// 			}	 
+	// 		}
+	// 	}
+	// 	termsInfo[i].Tf = count / termsCount
+	// 	termsInfo[i].Tfidf = termsInfo[i].Tf * term.Idf
+	// }
+
+	// Now parallelized
 	for i, term := range termsInfo {
-		var count float64
-		for _, sen := range sens {
-			for _, word := range sen {
-				word = sanitizeWord(word)
-				if term.Term == word {
-					count++
-				}	 
-			}
-		}
-		termsInfo[i].Tf = count / termsCount
-		termsInfo[i].Tfidf = termsInfo[i].Tf * term.Idf
+		job := &Job{i, termsCount, term.Term, term.Idf, 0.0, 0.0}
+		go findTfidf(job, sens, jobsChan)
 	}
+	for range termsInfo {
+		completedJob := <- jobsChan
+		termsInfo[completedJob.idx].Tf = completedJob.tf
+		termsInfo[completedJob.idx].Tfidf = completedJob.tfidf
+	}
+	//
+
 	if lang == "id" {
+		// original modifier function
+		// for i, term := range termsInfo {
+		// 	for _, vocab := range pos {
+		// 		if term.Term != vocab.Word {
+		// 			termsInfo[i].Tfidf += termsInfo[i].Tfidf * modifier["nama"]
+		// 			break
+		// 		}
+		// 		if vocab.Word == term.Term {
+		// 			if vocab.Type != "lain-lain" || vocab.Type != "pronomina" || vocab.Type != "interjeksi" || vocab.Type != "preposisi" {
+		// 				termsInfo[i].Tfidf += termsInfo[i].Tfidf * modifier[vocab.Type]
+		// 				break
+		// 			}
+		// 			break
+		// 		}
+		// 	} 
+		// }
+
+		// paralellized modifier function
 		for i, term := range termsInfo {
-			for _, vocab := range pos {
-				if term.Term != vocab.Word {
-					termsInfo[i].Tfidf += termsInfo[i].Tfidf * modifier["nama"]
-					break
-				}
-				if vocab.Word == term.Term {
-					if vocab.Type != "lain-lain" || vocab.Type != "pronomina" || vocab.Type != "interjeksi" || vocab.Type != "preposisi" {
-						termsInfo[i].Tfidf += termsInfo[i].Tfidf * modifier[vocab.Type]
-						break
-					}
-					break
-				}
-			} 
+			job := &Job{i, 0, term.Term, term.Tfidf, 0.0, 0.0}
+			go modifyTfidfId(job, pos, jobsChan)
 		}
+		for range termsInfo {
+			completedJob := <- jobsChan
+			termsInfo[completedJob.idx].Tfidf = completedJob.tfidf
+		}
+		//
 	}
 	// sort descending by tfidf
 	for i, v := range termsInfo {
@@ -296,13 +406,6 @@ func GetTags(text string, num int) []*Info {
 	// empty termsInfo
 	termsInfo = []*Info{}
 	return result
-}
-
-type Info struct {
-	Term string
-	Idf float64
-	Tf float64
-	Tfidf float64
 }
 
 func flatten(sens [][]string) []string {

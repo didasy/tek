@@ -13,18 +13,36 @@ const (
 
 var result []*tek.Info
 
-func TestGetTag(t *testing.T) {
+func TestGetTagEn(t *testing.T) {
 	textB, _ := ioutil.ReadFile("../sample.txt")
 	text := string(textB)
 	tek.SetLang("en")
 	result = tek.GetTags(text, num)
 }
 
-func BenchmarkGetTag(b *testing.B) {
+func TestGetTagId(t *testing.T) {
+	textB, _ := ioutil.ReadFile("../indonesian.txt")
+	text := string(textB)
+	tek.SetLang("id")
+	result = tek.GetTags(text, num)
+}
+
+func BenchmarkGetTagEn(b *testing.B) {
 	textB, _ := ioutil.ReadFile("../sample.txt")
 	text := string(textB)
 	var r []*tek.Info
 	tek.SetLang("en")
+	for n := 0; n < b.N; n++ {
+		r = tek.GetTags(text, num)
+	}
+	result = r
+}
+
+func BenchmarkGetTagId(b *testing.B) {
+	textB, _ := ioutil.ReadFile("../indonesian.txt")
+	text := string(textB)
+	var r []*tek.Info
+	tek.SetLang("id")
 	for n := 0; n < b.N; n++ {
 		r = tek.GetTags(text, num)
 	}

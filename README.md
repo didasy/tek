@@ -35,7 +35,8 @@ Or just open `test/sample.go`
 ### Benchmark
 Using i3-3217U @1.8GHz with 370 total words from the sample.txt provided and command `go test -bench . -benchtime=5s -cpu 4`:
 ```
-BenchmarkGetTag-4            300          27111330 ns/op
+BenchmarkGetTagEn-4         1000          11097404 ns/op
+BenchmarkGetTagId-4         1000           6295201 ns/op
 ```
 
 ### License
