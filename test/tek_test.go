@@ -18,6 +18,9 @@ func TestGetTagEn(t *testing.T) {
 	text := string(textB)
 	tek.SetLang("en")
 	result = tek.GetTags(text, num)
+	if len(result) <= 0 {
+		t.Fatal("Get English tags test failed")
+	}
 }
 
 func TestGetTagId(t *testing.T) {
@@ -25,9 +28,13 @@ func TestGetTagId(t *testing.T) {
 	text := string(textB)
 	tek.SetLang("id")
 	result = tek.GetTags(text, num)
+	if len(result) <= 0 {
+		t.Fatal("Get Indonesian tags test failed")
+	}
 }
 
 func BenchmarkGetTagEn(b *testing.B) {
+	b.ResetTimer()
 	textB, _ := ioutil.ReadFile("../sample.txt")
 	text := string(textB)
 	var r []*tek.Info
@@ -39,6 +46,7 @@ func BenchmarkGetTagEn(b *testing.B) {
 }
 
 func BenchmarkGetTagId(b *testing.B) {
+	b.ResetTimer()
 	textB, _ := ioutil.ReadFile("../indonesian.txt")
 	text := string(textB)
 	var r []*tek.Info
