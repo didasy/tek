@@ -285,7 +285,7 @@ func GetTags(text string, num int) []*Info {
 	seq = <- rmStopWordsChan
 	// end
 	termsCount := float64(len(flatten(sens)))
-	
+
 	// More concurrency below
 
 	// original idf function
@@ -318,7 +318,7 @@ func GetTags(text string, num int) []*Info {
 	for range termsInfo {
 		<- doneChan
 	}
-	// 
+	//
 
 	// original tf-idf function
 	// find each word their tf-idf
@@ -329,7 +329,7 @@ func GetTags(text string, num int) []*Info {
 	// 			word = sanitizeWord(word)
 	// 			if term.Term == word {
 	// 				count++
-	// 			}	 
+	// 			}
 	// 		}
 	// 	}
 	// 	termsInfo[i].Tf = count / termsCount
@@ -360,7 +360,7 @@ func GetTags(text string, num int) []*Info {
 		// 			}
 		// 			break
 		// 		}
-		// 	} 
+		// 	}
 		// }
 
 		// paralellized modifier function
@@ -436,10 +436,10 @@ func createSentences(text string, createSentencesChan chan<- [][]string) {
 }
 
 func uniqSentences(sentences [][]string) [][]string {
-	var z []string
-	for _, v := range sentences {
+	z := make([]string, len(sentences))
+	for i, v := range sentences {
 		j := strings.Join(v, " ")
-		z = append(z, j)
+		z[i] = j
 	}
 	m := make(map[string]bool)
 	var uniq []string
@@ -450,9 +450,9 @@ func uniqSentences(sentences [][]string) [][]string {
 		uniq = append(uniq, v)
 		m[v] = true
 	}
-	var unique [][]string
-	for _, v := range uniq {
-		unique = append(unique, strings.Fields(v))
+	unique := make([][]string, len(uniq))
+	for i, v := range uniq {
+		unique[i] = strings.Fields(v)
 	}
 	return unique
 }
