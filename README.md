@@ -29,8 +29,8 @@ func main() {
 	}
 }
 ```
-
-Or just open `test/sample.go`
+### Testing
+To test, just run `go test`, but you need to have [gomega](http://github.com/onsi/gomega) and [ginkgo](http://github.com/onsi/ginkgo) installed.
 
 ### Benchmark
 Using i3-3217U @1.8GHz with 370 total words from the sample.txt provided and command `go test -bench . -benchtime=5s -cpu 4`:
