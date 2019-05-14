@@ -4,12 +4,10 @@ tek is an automatic tagging library for Go.
 package tek
 
 import (
-	"os"
 	"math"
+	"sort"
 	"strings"
 	"unicode"
-	"io/ioutil"
-	"encoding/json"
 )
 
 const (
@@ -175,10 +173,10 @@ func SetStopWords(s []string) {
 
 // need to tweak these values later
 // var modifier map[string]float64 = map[string]float64{ "nama": 2.5, "nomina" : 1.75, "verba" : 1, "adjektiva" : 0.5, "adverbia" : 0.75, "numeralia" : 0.5 }
-var modifier map[string]float64 = map[string]float64{ "nama": 3.5, "nomina" : 3.0, "verba" : 2.0, "adjektiva" : 1.0, "adverbia" : 0.25, "numeralia" : 0.5 }
+var modifier map[string]float64 = map[string]float64{"nama": 3.5, "nomina": 3.0, "verba": 2.0, "adjektiva": 1.0, "adverbia": 0.25, "numeralia": 0.5}
 
 type Vocab struct {
-	Id int `json:id"`
+	Id   int    `json:"id"`
 	Word string `json:"word"`
 	Type string `json:"type"`
 }
@@ -191,22 +189,15 @@ func SetLang(l string) error {
 	switch l {
 	case "id":
 		stopWords = indonesianStopWords
-		fb, err := ioutil.ReadFile(os.Getenv("GOPATH") + "/src/github.com/JesusIslam/tek/pos_id.json")
-		if err != nil {
-			return err
-		}
-		err = json.Unmarshal(fb, &pos)
-		if err != nil {
-			return err
-		}
-	break
+		pos = indonesianPos
+		break
 	case "en":
 		stopWords = englishStopWords
-	break
+		break
 	default:
 		// if undefined language, use empty stopwords
 		stopWords = []string{}
-	break
+		break
 	}
 	lang = l
 	return nil
@@ -252,9 +243,21 @@ func modifyTfidfId(idx int, termsInfo []*Info, pos []*Vocab, done chan<- bool) {
 			break
 		}
 		if termsInfo[idx].Term == vocab.Word {
-			if vocab.Type != "lain-lain" || vocab.Type != "pronomina" || vocab.Type != "interjeksi" || vocab.Type != "preposisi" {
+			// go vet complains if we use this form
+			// if vocab.Type != "lain-lain" || vocab.Type != "pronomina" || vocab.Type != "interjeksi" || vocab.Type != "preposisi" {
+			// 	termsInfo[idx].Tfidf += termsInfo[idx].Tfidf * modifier[vocab.Type]
+			// }
+			if vocab.Type != "lain-lain" {
 				termsInfo[idx].Tfidf += termsInfo[idx].Tfidf * modifier[vocab.Type]
-				break
+			}
+			if vocab.Type != "pronomina" {
+				termsInfo[idx].Tfidf += termsInfo[idx].Tfidf * modifier[vocab.Type]
+			}
+			if vocab.Type != "interjeksi" {
+				termsInfo[idx].Tfidf += termsInfo[idx].Tfidf * modifier[vocab.Type]
+			}
+			if vocab.Type != "preposisi" {
+				termsInfo[idx].Tfidf += termsInfo[idx].Tfidf * modifier[vocab.Type]
 			}
 			break
 		}
@@ -263,9 +266,9 @@ func modifyTfidfId(idx int, termsInfo []*Info, pos []*Vocab, done chan<- bool) {
 }
 
 type Info struct {
-	Term string
-	Idf float64
-	Tf float64
+	Term  string
+	Idf   float64
+	Tf    float64
 	Tfidf float64
 }
 
@@ -281,8 +284,8 @@ func GetTags(text string, num int) []*Info {
 	defer close(createSentencesChan)
 	go removeStopWords(seq, stopWords, rmStopWordsChan)
 	go createSentences(text, createSentencesChan)
-	sens := <- createSentencesChan
-	seq = <- rmStopWordsChan
+	sens := <-createSentencesChan
+	seq = <-rmStopWordsChan
 	// end
 	termsCount := float64(len(flatten(sens)))
 
@@ -291,21 +294,21 @@ func GetTags(text string, num int) []*Info {
 	// original idf function
 	// var termsInfo []*Info
 	// for _, term := range seq {
-		// find idf of each term by counting word occurence first
-		// count := 0.0
-		// for _, sen := range sens {
-		// 	found := false
-		// 	for _, word := range sen {
-		// 		if term == word {
-		// 			found = true
-		// 		}
-		// 	}
-		// 	if found {
-		// 		count++
-		// 	}
-		// }
-		// idf := math.Log(termsCount / count)
-		// termsInfo = append(termsInfo, &Info{term, idf, 0.0, 0.0})
+	// find idf of each term by counting word occurence first
+	// count := 0.0
+	// for _, sen := range sens {
+	// 	found := false
+	// 	for _, word := range sen {
+	// 		if term == word {
+	// 			found = true
+	// 		}
+	// 	}
+	// 	if found {
+	// 		count++
+	// 	}
+	// }
+	// idf := math.Log(termsCount / count)
+	// termsInfo = append(termsInfo, &Info{term, idf, 0.0, 0.0})
 	// }
 
 	// Parallelize the original function
@@ -316,7 +319,7 @@ func GetTags(text string, num int) []*Info {
 		go findIdf(i, termsInfo, sens, termsCount, term, doneChan)
 	}
 	for range termsInfo {
-		<- doneChan
+		<-doneChan
 	}
 	//
 
@@ -341,7 +344,7 @@ func GetTags(text string, num int) []*Info {
 		go findTfidf(i, termsInfo, termsCount, sens, doneChan)
 	}
 	for range termsInfo {
-		<- doneChan
+		<-doneChan
 	}
 	//
 
@@ -368,7 +371,7 @@ func GetTags(text string, num int) []*Info {
 			go modifyTfidfId(i, termsInfo, pos, doneChan)
 		}
 		for range termsInfo {
-			<- doneChan
+			<-doneChan
 		}
 		//
 	}
@@ -385,6 +388,10 @@ func GetTags(text string, num int) []*Info {
 	if num >= len(termsInfo) {
 		num = len(termsInfo)
 	}
+	// sort from highest tfidf first
+	sort.SliceStable(termsInfo, func(i, j int) bool {
+		return termsInfo[j].Tfidf < termsInfo[i].Tfidf
+	})
 	// return only N number of tags
 	result := make([]*Info, num)
 	copy(result, termsInfo[:num])
@@ -411,7 +418,7 @@ func createSentences(text string, createSentencesChan chan<- [][]string) {
 		word = strings.ToLower(word)
 		// if there isn't . ? or !, append to sentence. If found, also append (and remove the non alphanumerics) but reset the sentence
 		if strings.ContainsRune(word, '.') || strings.ContainsRune(word, '!') || strings.ContainsRune(word, '?') {
-			word = strings.Map(func (r rune) rune {
+			word = strings.Map(func(r rune) rune {
 				if r == '.' || r == '!' || r == '?' {
 					return -1
 				}
@@ -477,7 +484,7 @@ func removeStopWords(seq []string, StopWords []string, rmStopWordsChan chan<- []
 func sanitizeWord(word string) string {
 	word = strings.ToLower(word)
 	var prev rune
-	word = strings.Map(func (r rune) rune {
+	word = strings.Map(func(r rune) rune {
 		// don't remove '-' if it exists after alphanumerics
 		if r == '-' && ((prev >= '0' && prev <= '9') || (prev >= 'a' && prev <= 'z') || prev == 'ä' || prev == 'ö' || prev == 'ü' || prev == 'ß' || prev == 'é') {
 			return r
@@ -506,7 +513,7 @@ func createDictionary(text string) map[string]int {
 	text = strings.ToLower(text)
 	// remove all non alphanumerics but spaces
 	var prev rune
-	text = strings.Map(func (r rune) rune {
+	text = strings.Map(func(r rune) rune {
 		// don't remove '-' if it exists after alphanumerics
 		if r == '-' && ((prev >= '0' && prev <= '9') || (prev >= 'a' && prev <= 'z') || prev == 'ä' || prev == 'ö' || prev == 'ü' || prev == 'ß' || prev == 'é') {
 			return r
