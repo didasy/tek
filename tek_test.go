@@ -1,7 +1,7 @@
 package tek_test
 
 import (
-	. "github.com/JesusIslam/tek"
+	. "github.com/didasy/tek"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

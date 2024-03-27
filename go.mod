@@ -1,4 +1,4 @@
-module github.com/JesusIslam/tek
+module github.com/didasy/tek
 
 go 1.12
 

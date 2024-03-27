@@ -1,10 +1,10 @@
 # tek
 ### A golang package to get tags of an article
 ----------------------------------------------
-[![GoDoc](https://godoc.org/github.com/JesusIslam/tek?status.svg)](https://godoc.org/github.com/JesusIslam/tek)
+[![GoDoc](https://godoc.org/github.com/didasy/tek?status.svg)](https://godoc.org/github.com/didasy/tek)
 
 ### Installation
-`go get github.com/JesusIslam/tek`
+`go get github.com/didasy/tek`
 
 ### Dependencies
 None
@@ -16,7 +16,7 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
-	"github.com/JesusIslam/tek"
+	"github.com/didasy/tek"
 )
 
 func main() {
