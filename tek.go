@@ -23,267 +23,184 @@ func init() {
 	}
 }
 
-// need to expand more and rearranged
+// Comprehensive Indonesian stop words
 var indonesianStopWords []string = []string{
-	"di",
-	"dari",
-	"juga",
-	"lalu",
-	"dengan",
-	"ke",
-	"ini",
-	"itu",
-	"dia",
-	"dan",
-	"aku",
-	"saya",
-	"kamu",
-	"anda",
-	"kita",
-	"mereka",
-	"yang",
-	"adalah",
-	"walaupun",
-	"jika",
-	"jadi",
-	"akan",
-	"tetapi",
-	"begitupun",
-	"bilamana",
-	"bagaimanapun",
-	"apa",
-	"untuk",
-	"kepada",
-	"menurut",
-	"siapa",
-	"dimana",
-	"kapan",
-	"bagaimana",
-	"kenapa",
-	"mengapa",
-	"pada",
-	"dalam",
-	"ada",
-	"adapun",
-	"apapun",
-	"ya",
-	"tidak",
-	"bukan",
-	"mengalami",
-	"pergi",
-	"dapat",
-	"bisa",
-	"melakukan",
-	"membuat",
-	"menjadi",
-	"terjadi",
-	"memberikan",
-	"memiliki",
-	"menggunakan",
-	"mengatakan",
-	"mendapatkan",
-	"menjalankan",
-	"melihat",
-	"mendapat",
-	"memberi",
-	"menerapkan",
-	"melakukan",
-	"mengambil",
-	"menuju",
-	"terhadap",
-	"sebagai",
-	"oleh",
-	"karena",
-	"saat",
-	"selain",
-	"tersebut",
-	"yaitu",
-	"yakni",
-	"ialah",
-	"bahwa",
-	"dimana",
-	"kemudian",
-	"setelah",
-	"sebelum",
-	"sejak",
-	"hingga",
-	"sampai",
-	"daripada",
-	"sering",
-	"kerap",
+	// Common function words
+	"di", "dari", "juga", "lalu", "dengan", "ke", "ini", "itu", "dia", "dan", "aku", "saya", "kamu", "anda", "kita", "mereka", "yang", "adalah", "walaupun", "jika", "jadi", "akan", "tetapi", "begitupun", "bilamana", "bagaimanapun", "apa", "untuk", "kepada", "menurut", "siapa", "dimana", "kapan", "bagaimana", "kenapa", "mengapa", "pada", "dalam", "ada", "adapun", "apapun", "ya", "tidak", "bukan",
+
+	// Personal pronouns
+	"aku", "saya", "engkau", "kamu", "anda", "beliau", "ia", "dia", "kita", "kami", "mereka",
+
+	// Demonstratives and relatives
+	"ini", "itu", "tersebut", "sini", "situ", "sana", "yang", "dimana", "kemana", "darimana",
+
+	// Conjunctions
+	"dan", "atau", "tetapi", "melainkan", "namun", "serta", "lalu", "kemudian", "lalu", "lalu", "lantas", "lalu", "lagi", "juga", "juga", "pun", "pula", "serta", "selanjutnya",
+
+	// Prepositions
+	"di", "ke", "dari", "pada", "dalam", "atas", "bawah", "antara", "dengan", "tanpa", "untuk", "bagi", "tentang", "hingga", "sampai", "sejak", "selama", "selama", "waktu",
+
+	// Question words
+	"apa", "siapa", "mengapa", "kenapa", "bagaimana", "berapa", "kapan", "dimana", "manakah", "bila",
+
+	// Negation and affirmation
+	"tidak", "bukan", "jangan", "tak", "jangan", "belum", "sudah", "telah", "pernah", "mungkin", "mestinya", "hendaknya", "semestinya",
+
+	// Auxiliary verbs
+	"dapat", "bisa", "akan", "mau", "ingin", "harus", "perlu", "mesti", "wajib", "boleh", "seharusnya", "sepatutnya",
+
+	// Common verbs (generic)
+	"adalah", "ialah", "yakni", "yaitu", "memiliki", "mempunyai", "terdapat", "ada", "ada", "terdapat", "wujud", "ada",
+
+	// Time expressions
+	"sekarang", "tadi", "tadinya", "nanti", "besok", "kemarin", "lusa", "tadi", "dulu", "dahulu", "sedang", "akan", "telah", "sudah", "masih", "belum", "pernah", "juga", "lagi", "juga", "sementara", "sementara", "sewaktu", "ketika", "tatkala",
+
+	// Place expressions
+	"sini", "situ", "sana", "dalam", "luar", "atas", "bawah", "depan", "belakang", "samping", "tengah", "pinggir", "ujung",
+
+	// Quantity and degree
+	"semua", "seluruh", "para", "segala", "berbagai", "macam", "jenis", "rupa", "banyak", "sedikit", "beberapa", "hampir", "kurang", "lebih", "paling", "sangat", "amat", "sekali", "cukup", "hanya", "saja", "melainkan", "selain", "kecuali",
+
+	// Modality and certainty
+	"mungkin", "barangkali", "tentu", "pasti", "jelas", "nyata", "jelas", "tentu", "pasti", "yakin", "percaya", "rasa", "kira", "agak", "agaknya", "kira-kira", "kayaknya", "sepertinya",
+
+	// Logical connectors
+	"karena", "sebab", "akibat", "demi", "guna", "agar", "supaya", "jika", "jikalau", "apabila", "bilamana", "manakala", "walaupun", "meskipun", "kendati", "sekalipun", "biarpun", "walaupun", "meski",
+
+	// Additional common function words
+	"bahwa", "bahwa", "bahwa", "hanya", "saja", "melainkan", "selain", "kecuali", "selain", "terkecuali", "justru", "justru", "justru", "malah", "malahan", "bahkan", "lebih-lebih", "terlebih", "apalagi",
+
+	// Numerical and temporal markers
+	"pertama", "kedua", "ketiga", "keempat", "kelima", "keenam", "ketujuh", "kedelapan", "kesembilan", "kesepuluh", "terakhir", "awal", "mula-mula", "sejak", "semenjak", "sedari",
+
+	// Discourse markers
+	"nah", "lho", "kok", "toh", "dong", "kan", "tuh", "nih", "deh", "yah", "yak", "yoi", "iya", "ya", "betul", "benar", "tentu", "pasti",
+
+	// Common Indonesian particles and interjections
+	"dong", "kan", "kok", "lho", "toh", "nih", "tuh", "deh", "yah", "sih", "dong", "yah", "yak", "ya", "oh", "ah", "aduh", "wah", "asyik", "asyik", "mantap", "cihuy",
+
+	// Additional generic action words
+	"melakukan", "membuat", "menjadi", "terjadi", "memberikan", "menggunakan", "mengatakan", "mendapatkan", "menjalankan", "melihat", "mendapat", "memberi", "mengambil", "menuju", "terhadap", "mengalami", "pergi",
+
+	// Common filler and transition words
+	"umumnya", "biasanya", "pada umumnya", "pada dasarnya", "intinya", "singkatnya", "ringkasnya", "garis besarnya", "sekali lagi", "lagi-lagi", "berulang kali", "berkali-kali", "beberapa kali", "sekian",
+
+	// Indonesian specific connectors
+	"sedangkan", "padahal", "biarpun", "sekalipun", "kendatipun", "meskipun", "walaupun", "daripada", "alih-alih", "justru", "malahan", "bahkan", "terlebih", "apalagi",
+
+	// Common discourse adverbs
+	"sering", "kerap", "acap", "kerapkali", "seringkali", "kerapkali", "biasanya", "umumnya", "lazimnya", "umumnya", "pada umumnya", "pada dasarnya", "pada hakikatnya",
+
+	// Additional common Indonesian words
+	"tersebut", "tersebut", "tersebut", "berikut", "berikut", "berikut", "berikutnya", "selanjutnya", "berikutnya", "seterusnya", "kemudian", "lalu", "lantas", "langsun", "langsung",
+
+	// Common Indonesian expressions
+	"hal", "sesuatu", "segala", "macam", "jenis", "bentuk", "rupa", "kondisi", "keadaan", "situasi", "kedudukan", "posisi", "tempat", "lokasi", "area", "wilayah", "daerah",
+
+	// More function words
+	"sebab", "karena", "akibat", "dampak", "pengaruh", "efek", "imbas", "akibatnya", "oleh karena itu", "oleh sebab itu", "maka", "maka dari itu", "karenanya", "oleh sebab itu",
+
+	// Comparative and superlative markers
+	"lebih", "paling", "ter-", "ber-", "per-", "tersebut", "terkait", "berkaitan", "menyangkut", "mengenai", "tentang", "soal", "urusan", "hal", "masalah",
+
+	// Common Indonesian modal particles
+	"lah", "kah", "tah", "dong", "kan", "toh", "kok", "sih", "nih", "tuh", "deh", "yah", "yuk", "ayo", "mari", "silakan", "pergilah", "datanglah",
 }
+
+// Comprehensive English stop words
 var englishStopWords []string = []string{
-	"a",
-	"an",
-	"are",
-	"arent",
-	"about",
-	"alone",
-	"also",
-	"am",
-	"and",
-	"as",
-	"at",
-	"after",
-	"all",
-	"another",
-	"any",
-	"be",
-	"because",
-	"before",
-	"beside",
-	"besides",
-	"between",
-	"but",
-	"by",
-	"come",
-	"does",
-	"doesnt",
-	"did",
-	"didnt",
-	"do",
-	"dont",
-	"we",
-	"for",
-	"his",
-	"him",
-	"himself",
-	"himselves",
-	"her",
-	"herself",
-	"herselves",
-	"how",
-	"our",
-	"ours",
-	"yours",
-	"your",
-	"with",
-	"my",
-	"you",
-	"the",
-	"in",
-	"that",
-	"thats",
-	"out",
-	"on",
-	"off",
-	"if",
-	"will",
-	"these",
-	"there",
-	"theres",
-	"those",
-	"he",
-	"she",
-	"it",
-	"its",
-	"us",
-	"is",
-	"would",
-	"wouldnt",
-	"was",
-	"wasnt",
-	"have",
-	"havent",
-	"were",
-	"werent",
-	"has",
-	"hasnt",
-	"wont",
-	"not",
-	"had",
-	"hadnt",
-	"isnt",
-	"etc",
-	"i",
-	"or",
-	"of",
-	"other",
-	"others",
-	"so",
-	"than",
-	"though",
-	"to",
-	"too",
-	"they",
-	"through",
-	"until",
-	"go",
-	"went",
-	"going",
-	"gone",
-	"came",
-	"coming",
-	"get",
-	"getting",
-	"see",
-	"saw",
-	"seeing",
-	"seen",
-	"know",
-	"knew",
-	"knowing",
-	"known",
-	"take",
-	"took",
-	"taking",
-	"taken",
-	"give",
-	"gave",
-	"giving",
-	"given",
-	"make",
-	"made",
-	"making",
-	"can",
-	"could",
-	"may",
-	"might",
-	"must",
-	"shall",
-	"should",
-	"being",
-	"been",
-	"do",
-	"doing",
-	"done",
-	"say",
-	"said",
-	"saying",
-	"tell",
-	"told",
-	"telling",
-	"ask",
-	"asked",
-	"asking",
-	"work",
-	"worked",
-	"working",
-	"seem",
-	"seemed",
-	"seeming",
-	"leave",
-	"left",
-	"leaving",
-	"call",
-	"called",
-	"calling",
-	"try",
-	"tried",
-	"trying",
-	"need",
-	"needed",
-	"needing",
-	"feel",
-	"felt",
-	"feeling",
-	"become",
-	"became",
-	"becoming",
-	"experience",
-	"experienced",
-	"experiencing",
-	"experiences",
+	// Articles and determiners
+	"a", "an", "the", "this", "that", "these", "those", "another", "other", "others", "some", "any", "no", "every", "each", "either", "neither", "both", "all", "several", "various", "certain", "such", "what", "whatever", "which", "whichever", "many", "much", "more", "most", "few", "fewer", "fewest", "little", "less", "least", "some", "somebody", "someone", "something", "somewhere", "anybody", "anyone", "anything", "anywhere", "everybody", "everyone", "everything", "everywhere", "nobody", "nothing", "nowhere",
+
+	// Personal pronouns
+	"i", "me", "my", "mine", "myself", "you", "your", "yours", "yourself", "yourselves", "he", "him", "his", "himself", "she", "her", "hers", "herself", "it", "its", "itself", "we", "us", "our", "ours", "ourselves", "they", "them", "their", "theirs", "themselves",
+
+	// Possessive pronouns
+	"my", "your", "his", "her", "its", "our", "their", "mine", "yours", "hers", "ours", "theirs",
+
+	// Demonstratives
+	"this", "that", "these", "those", "here", "there", "now", "then", "ago", "before", "after", "since", "until", "when", "whenever", "while", "during",
+
+	// Prepositions
+	"about", "above", "across", "after", "against", "along", "amid", "among", "amongst", "around", "as", "at", "atop", "before", "behind", "below", "beneath", "beside", "besides", "between", "betwixt", "beyond", "by", "despite", "down", "during", "except", "for", "from", "in", "inside", "into", "like", "near", "next", "of", "off", "on", "onto", "out", "outside", "over", "per", "since", "through", "throughout", "till", "to", "toward", "towards", "under", "underneath", "until", "unto", "up", "upon", "via", "with", "within", "without", "worth",
+
+	// Conjunctions
+	"and", "but", "or", "nor", "for", "so", "yet", "after", "although", "as", "because", "before", "even", "if", "lest", "once", "provided", "rather", "since", "so", "than", "that", "though", "till", "unless", "when", "whenever", "where", "whereas", "wherever", "whether", "while", "why",
+
+	// Auxiliary verbs
+	"be", "am", "is", "are", "was", "were", "been", "being", "have", "has", "had", "having", "do", "does", "did", "doing", "done", "shall", "should", "will", "would", "can", "could", "may", "might", "must", "ought", "need", "dare", "used", "suppose", "seem", "appear", "happen", "chance",
+
+	// Common verbs (generic)
+	"be", "become", "been", "being", "have", "has", "had", "having", "do", "does", "did", "doing", "done", "go", "goes", "went", "going", "gone", "come", "comes", "came", "coming", "get", "gets", "got", "gotten", "getting", "make", "makes", "made", "making", "take", "takes", "took", "taken", "taking", "give", "gives", "gave", "given", "giving", "see", "sees", "saw", "seen", "seeing", "look", "looks", "looked", "looking", "say", "says", "said", "saying", "tell", "tells", "told", "telling", "ask", "asks", "asked", "asking", "work", "works", "worked", "working", "try", "tries", "tried", "trying", "need", "needs", "needed", "needing", "feel", "feels", "felt", "feeling", "seem", "seems", "seemed", "seeming", "leave", "leaves", "left", "leaving", "call", "calls", "called", "calling", "experience", "experiences", "experienced", "experiencing",
+
+	// Common adverbs
+	"also", "always", "never", "often", "sometimes", "usually", "rarely", "seldom", "occasionally", "frequently", "constantly", "continuously", "continually", "again", "once", "twice", "seldom", "rarely", "hardly", "scarcely", "barely", "almost", "nearly", "approximately", "roughly", "about", "around", "here", "there", "everywhere", "nowhere", "somewhere", "anywhere", "abroad", "away", "back", "forward", "backward", "up", "down", "upward", "downward", "inward", "outward", "north", "south", "east", "west", "northward", "southward", "eastward", "westward", "abroad", "outside", "inside", "indoors", "outdoors", "upstairs", "downstairs", "across", "along", "aside", "away", "back", "by", "down", "forth", "home", "near", "off", "on", "out", "over", "past", "round", "through", "under", "up",
+
+	// Time adverbs
+	"now", "then", "today", "tomorrow", "yesterday", "tonight", "soon", "later", "early", "late", "before", "after", "since", "until", "when", "whenever", "while", "during", "ago", "already", "yet", "still", "even", "just", "now", "presently", "recently", "currently", "lately", "immediately", "instantly", "quickly", "rapidly", "slowly", "gradually", "suddenly", "abruptly", "unexpectedly",
+
+	// Degree adverbs
+	"very", "quite", "rather", "fairly", "pretty", "somewhat", "slightly", "a little", "a bit", "extremely", "incredibly", "amazingly", "surprisingly", "remarkably", "notably", "particularly", "especially", "mainly", "mostly", "primarily", "chiefly", "principally", "largely", "generally", "usually", "typically", "normally", "commonly", "frequently", "often", "regularly", "repeatedly", "constantly", "continually", "always", "never", "rarely", "seldom", "hardly", "scarcely", "barely",
+
+	// Question words
+	"who", "whom", "whose", "what", "which", "where", "when", "why", "how", "whatever", "whichever", "whoever", "whomever", "whenever", "wherever", "however", "whyever", "howsoever",
+
+	// Negation
+	"not", "no", "none", "nothing", "nowhere", "neither", "never", "no one", "nobody", "hardly", "scarcely", "barely", "rarely", "seldom", "without", "lack", "lacking", "absence", "absent", "deny", "denied", "refuse", "refused", "reject", "rejected", "negative", "negatively",
+
+	// Affirmation
+	"yes", "yeah", "yep", "yup", "indeed", "certainly", "definitely", "absolutely", "surely", "truly", "really", "actually", "in fact", "of course", "naturally", "obviously", "clearly", "plainly", "evidently", "apparently", "seemingly", "supposedly", "presumably", "allegedly", "reportedly",
+
+	// Logical connectors
+	"therefore", "thus", "hence", "consequently", "accordingly", "so", "then", "henceforth", "thereby", "thereupon", "wherefore", "why", "because", "since", "as", "for", "due to", "owing to", "thanks to", "because of", "on account of", "by virtue of", "in view of", "in light of", "considering", "given", "granted", "assuming", "supposing", "provided", "providing", "if", "unless", "whether", "either", "or", "neither", "nor", "both", "and", "but", "yet", "however", "nevertheless", "nonetheless", "notwithstanding", "although", "though", "even though", "despite", "in spite of", "regardless of", "irrespective of", "disregarding",
+
+	// Additional common function words
+	"also", "too", "either", "neither", "both", "all", "every", "each", "any", "some", "none", "no", "not", "only", "just", "merely", "simply", "purely", "solely", "exclusively", "particularly", "especially", "specifically", "exactly", "precisely", "approximately", "roughly", "about", "around", "nearly", "almost", "virtually", "practically", "essentially", "basically", "fundamentally", "primarily", "mainly", "chiefly", "principally", "largely", "mostly", "generally", "usually", "typically", "normally", "commonly", "frequently", "often", "regularly", "repeatedly", "constantly", "continually", "always", "never", "rarely", "seldom", "hardly", "scarcely", "barely",
+
+	// Modal and auxiliary expressions
+	"can", "could", "may", "might", "must", "shall", "should", "will", "would", "ought", "need", "dare", "used to", "have to", "had to", "must", "should", "ought to", "supposed to", "going to", "about to", "bound to", "likely to", "expected to", "required to", "forced to", "compelled to", "made to",
+
+	// Common discourse markers
+	"well", "now", "so", "then", "anyway", "anyhow", "besides", "moreover", "furthermore", "additionally", "also", "too", "as well", "what's more", "in addition", "further", "again", "once more", "anyway", "anyhow", "regardless", "nevertheless", "nonetheless", "however", "but", "yet", "still", "though", "although", "even so", "all the same", "in any case", "in any event", "at any rate", "in either case", "whatever happens", "come what may",
+
+	// Filler and hesitation words
+	"uh", "um", "er", "ah", "oh", "well", "like", "you know", "I mean", "kind of", "sort of", "I guess", "I suppose", "I think", "I believe", "I feel", "I reckon", "I suspect", "I imagine", "I expect", "I hope", "I wish", "I want", "I need", "I'd like", "I'd prefer", "I'd rather", "I'd better", "I should", "I must", "I have to", "I've got to",
+
+	// Contractions and informal forms
+	"im", "youre", "hes", "shes", "its", "were", "theyre", "ive", "youve", "weve", "theyve", "id", "youd", "hed", "shed", "wed", "theyd", "ill", "youll", "hell", "shell", "well", "theyll", "isnt", "arent", "wasnt", "werent", "havent", "hasnt", "hadnt", "dont", "doesnt", "didnt", "wont", "wouldnt", "cant", "couldnt", "shouldnt", "shouldnt", "mustnt", "mightnt", "neednt", "darent", "didnt", "couldnt", "shouldnt", "wouldnt", "werent", "wasnt", "arent", "isnt", "havent", "hasnt", "hadnt", "doesnt", "dont", "didnt", "wont", "wouldnt", "cant", "couldnt", "shouldnt", "mustnt", "mightnt", "neednt",
+
+	// Additional common expressions
+	"etc", "et cetera", "and so on", "and so forth", "etcetera", "vice versa", "per se", "de facto", "de jure", "status quo", "modus operandi", "modus vivendi", "sine qua non", "terra incognita", "tabula rasa", "raison d'etre", "tour de force", "piece de resistance", "cri de coeur", "bete noire", "enfant terrible", "nom de plume", "nom de guerre", "tour de force", "force majeure", "fait accompli", "coup de grace", "coup d'etat", "pièce de résistance", "raison d'être",
+
+	// Numbers and numerical expressions
+	"one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety", "hundred", "thousand", "million", "billion", "trillion", "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth", "once", "twice", "thrice", "again", "single", "double", "triple", "quadruple", "multiple", "several", "various", "numerous", "countless", "innumerable", "many", "few", "several", "some", "any", "no", "none",
+
+	// Days, months, seasons
+	"sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december", "spring", "summer", "autumn", "fall", "winter", "morning", "afternoon", "evening", "night", "midnight", "noon", "dawn", "dusk", "sunrise", "sunset", "daytime", "nighttime",
+
+	// Directions and locations
+	"north", "south", "east", "west", "northeast", "northwest", "southeast", "southwest", "up", "down", "left", "right", "forward", "backward", "upward", "downward", "inward", "outward", "across", "along", "around", "through", "between", "among", "amid", "behind", "below", "beneath", "beside", "beyond", "inside", "outside", "upon", "within", "without", "aboard", "about", "above", "across", "after", "against", "along", "amid", "among", "anti", "around", "as", "at", "before", "behind", "below", "beneath", "beside", "besides", "between", "beyond", "but", "by", "concerning", "considering", "despite", "down", "during", "except", "excepting", "excluding", "following", "for", "from", "in", "inside", "into", "like", "minus", "near", "of", "off", "on", "onto", "opposite", "outside", "over", "past", "per", "plus", "regarding", "round", "save", "since", "than", "through", "to", "toward", "towards", "under", "underneath", "unlike", "until", "up", "upon", "versus", "via", "with", "within", "without",
+
+	// Colors and basic adjectives
+	"red", "blue", "green", "yellow", "orange", "purple", "pink", "brown", "black", "white", "gray", "grey", "big", "small", "large", "little", "tiny", "huge", "enormous", "giant", "massive", "microscopic", "miniature", "minuscule", "long", "short", "tall", "high", "low", "deep", "shallow", "wide", "narrow", "thick", "thin", "fat", "skinny", "slim", "heavy", "light", "hot", "cold", "warm", "cool", "freezing", "boiling", "scorching", "icy", "new", "old", "young", "fresh", "stale", "modern", "ancient", "recent", "current", "past", "future", "present", "good", "bad", "nice", "nasty", "pleasant", "unpleasant", "beautiful", "ugly", "pretty", "handsome", "attractive", "repulsive", "clean", "dirty", "tidy", "messy", "neat", "disorganized", "organized", "orderly", "chaotic", "easy", "difficult", "hard", "simple", "complex", "complicated", "straightforward", "basic", "advanced", "elementary", "sophisticated",
+
+	// Basic shapes and materials
+	"circle", "square", "triangle", "rectangle", "oval", "round", "flat", "curved", "straight", "bent", "wood", "metal", "plastic", "glass", "paper", "stone", "rock", "sand", "water", "oil", "fire", "air", "earth", "soil", "dirt", "clay", "concrete", "steel", "iron", "gold", "silver", "copper", "bronze", "brass", "lead", "tin", "aluminum", "plastic", "rubber", "leather", "cloth", "fabric", "silk", "cotton", "wool", "linen", "nylon", "polyester",
+
+	// Food and drink basics
+	"food", "eat", "drink", "water", "milk", "bread", "rice", "meat", "fish", "chicken", "beef", "pork", "vegetable", "fruit", "apple", "banana", "orange", "grape", "strawberry", "potato", "tomato", "onion", "carrot", "lettuce", "cabbage", "corn", "wheat", "flour", "sugar", "salt", "pepper", "oil", "butter", "cheese", "egg", "coffee", "tea", "juice", "soda", "beer", "wine", "alcohol", "cocktail", "dessert", "cake", "cookie", "pie", "ice cream", "chocolate", "candy", "sweet", "sour", "bitter", "spicy", "hot", "mild", "fresh", "cooked", "raw", "baked", "fried", "boiled", "grilled", "roasted", "steamed", "frozen", "canned", "dried", "preserved",
+
+	// Body parts and health
+	"head", "face", "eye", "ear", "nose", "mouth", "lip", "tongue", "tooth", "teeth", "hair", "neck", "throat", "shoulder", "arm", "elbow", "wrist", "hand", "finger", "thumb", "chest", "back", "stomach", "waist", "hip", "leg", "knee", "ankle", "foot", "toe", "skin", "bone", "muscle", "blood", "heart", "lung", "brain", "liver", "kidney", "stomach", "health", "healthy", "sick", "ill", "disease", "illness", "pain", "ache", "hurt", "injury", "wound", "cut", "bruise", "medicine", "drug", "pill", "tablet", "capsule", "treatment", "therapy", "cure", "heal", "recover", "rest", "sleep", "wake", "tired", "exhausted", "energetic", "strong", "weak", "fit", "exercise", "workout", "diet", "nutrition",
+
+	// Family and relationships
+	"family", "mother", "father", "parent", "brother", "sister", "sibling", "son", "daughter", "child", "kid", "baby", "infant", "toddler", "teenager", "adult", "elderly", "grandmother", "grandfather", "grandparent", "uncle", "aunt", "cousin", "nephew", "niece", "husband", "wife", "spouse", "partner", "boyfriend", "girlfriend", "friend", "enemy", "neighbor", "colleague", "coworker", "boss", "employee", "employer", "manager", "leader", "follower", "teacher", "student", "mentor", "protégé", "role model", "hero", "villain",
+
+	// Education and learning
+	"school", "college", "university", "academy", "institute", "class", "course", "lesson", "subject", "topic", "study", "learn", "teach", "educate", "train", "practice", "exercise", "homework", "assignment", "project", "research", "experiment", "test", "exam", "quiz", "grade", "score", "mark", "degree", "diploma", "certificate", "qualification", "skill", "ability", "talent", "gift", "knowledge", "information", "data", "fact", "truth", "wisdom", "intelligence", "smart", "clever", "brilliant", "stupid", "dumb", "ignorant", "uneducated", "illiterate", "literate", "educated", "learned", "scholarly", "academic", "theoretical", "practical", "applied", "basic", "advanced", "elementary", "intermediate", "beginner", "expert", "master", "professional", "amateur", "novice", "specialist", "generalist",
+
+	// Work and career
+	"work", "job", "career", "profession", "occupation", "business", "company", "corporation", "organization", "institution", "agency", "department", "office", "factory", "shop", "store", "market", "industry", "trade", "commerce", "economy", "finance", "money", "cash", "currency", "dollar", "pound", "euro", "yen", "price", "cost", "expense", "budget", "income", "salary", "wage", "pay", "earn", "profit", "loss", "gain", "investment", "saving", "spending", "buying", "selling", "shopping", "purchase", "sale", "discount", "bargain", "deal", "offer", "contract", "agreement", "negotiation", "meeting", "conference", "presentation", "report", "document", "file", "record", "database", "computer", "technology", "internet", "website", "email", "phone", "call", "message", "communication", "conversation", "discussion", "argument", "debate", "dispute", "conflict", "resolution", "solution", "answer", "question", "problem", "issue", "challenge", "opportunity", "success", "failure", "achievement", "accomplishment", "goal", "objective", "target", "purpose", "mission", "vision", "strategy", "plan", "project", "task", "duty", "responsibility", "obligation", "commitment", "dedication", "effort", "attempt", "try", "performance", "result", "outcome", "consequence", "effect", "impact", "influence", "change", "development", "progress", "improvement", "growth", "expansion", "increase", "decrease", "reduction", "decline", "rise", "fall", "growth", "shrink", "expand", "contract",
 }
 
 var lang string = "en"
