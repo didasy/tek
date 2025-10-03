@@ -7,14 +7,16 @@ import (
 	. "github.com/onsi/gomega"
 
 	"io/ioutil"
+	"testing"
 )
 
-var _ = Describe("Tek", func() {
+var (
+	err error
+	indonesian []byte
+	sample []byte
+)
 
-	var err error
-	var indonesian []byte
-	var sample []byte
-
+func init() {
 	indonesian, err = ioutil.ReadFile("./indonesian.txt")
 	if err != nil {
 		Fail("Failed to read indonesian.txt")
@@ -23,6 +25,9 @@ var _ = Describe("Tek", func() {
 	if err != nil {
 		Fail("Failed to read sample.txt")
 	}
+}
+
+var _ = Describe("Tek", func() {
 
 	Describe("Testing the tagger", func() {
 		Context("Set language", func() {
@@ -78,3 +83,17 @@ var _ = Describe("Tek", func() {
 	})
 
 })
+
+func BenchmarkGetTagEn(b *testing.B) {
+	SetLang("en")
+	for i := 0; i < b.N; i++ {
+		GetTags(string(sample), 10)
+	}
+}
+
+func BenchmarkGetTagId(b *testing.B) {
+	SetLang("id")
+	for i := 0; i < b.N; i++ {
+		GetTags(string(indonesian), 10)
+	}
+}

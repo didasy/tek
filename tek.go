@@ -14,6 +14,14 @@ const (
 	VERSION = "0.1.1"
 )
 
+func init() {
+	// Initialize default stop words map for English
+	stopWordsMap = make(map[string]bool, len(englishStopWords))
+	for _, word := range englishStopWords {
+		stopWordsMap[word] = true
+	}
+}
+
 // need to expand more and rearranged
 var indonesianStopWords []string = []string{
 	"di",
@@ -165,10 +173,14 @@ var englishStopWords []string = []string{
 var lang string = "en"
 
 var stopWords []string = englishStopWords
+var stopWordsMap map[string]bool
 
-// Define your own stop words by providing a slice of string of stop words
 func SetStopWords(s []string) {
 	stopWords = s
+	stopWordsMap = make(map[string]bool, len(s))
+	for _, word := range s {
+		stopWordsMap[word] = true
+	}
 }
 
 // need to tweak these values later
@@ -182,6 +194,7 @@ type Vocab struct {
 }
 
 var pos []*Vocab
+var posMap map[string]*Vocab
 
 // Set language used, defaulted to english if not called. If argument is not "id" or "en", empty stop words will be used
 // For now only support Indonesian and English stop words
@@ -190,26 +203,45 @@ func SetLang(l string) error {
 	case "id":
 		stopWords = indonesianStopWords
 		pos = indonesianPos
+		// Build POS map for O(1) lookup
+		posMap = make(map[string]*Vocab, len(indonesianPos))
+		for _, vocab := range indonesianPos {
+			posMap[vocab.Word] = vocab
+		}
+		// Build stop words map
+		stopWordsMap = make(map[string]bool, len(indonesianStopWords))
+		for _, word := range indonesianStopWords {
+			stopWordsMap[word] = true
+		}
 		break
 	case "en":
 		stopWords = englishStopWords
+		// Build stop words map for English
+		stopWordsMap = make(map[string]bool, len(englishStopWords))
+		for _, word := range englishStopWords {
+			stopWordsMap[word] = true
+		}
+		posMap = nil
 		break
 	default:
 		// if undefined language, use empty stopwords
 		stopWords = []string{}
+		stopWordsMap = make(map[string]bool)
+		posMap = nil
 		break
 	}
 	lang = l
 	return nil
 }
 
-func findIdf(idx int, termsInfo []*Info, sentences [][]string, termsCount float64, term string, done chan<- bool) {
+func findIdf(idx int, termsInfo []*Info, sentences [][]string, termsCount float64, term string) {
 	count := 0.0
 	for _, sen := range sentences {
 		found := false
 		for _, word := range sen {
 			if term == word {
 				found = true
+				// Don't break here - the original logic didn't break
 			}
 		}
 		if found {
@@ -218,35 +250,34 @@ func findIdf(idx int, termsInfo []*Info, sentences [][]string, termsCount float6
 	}
 	idf := math.Log(termsCount / count)
 	termsInfo[idx] = &Info{term, idf, 0.0, 0.0}
-	done <- true
 }
 
-func findTfidf(idx int, termsInfo []*Info, termsCount float64, sentences [][]string, done chan<- bool) {
+func findTfidf(idx int, termsInfo []*Info, termsCount float64, sentences [][]string) {
 	count := 0.0
+	term := termsInfo[idx].Term
 	for _, sen := range sentences {
 		for _, word := range sen {
-			word = sanitizeWord(word)
-			if termsInfo[idx].Term == word {
+			word = sanitizeWord(word) // Restore sanitizeWord call for correctness
+			if term == word {
 				count++
 			}
 		}
 	}
 	termsInfo[idx].Tf = count / termsCount
 	termsInfo[idx].Tfidf = termsInfo[idx].Tf * termsInfo[idx].Idf
-	done <- true
 }
 
-func modifyTfidfId(idx int, termsInfo []*Info, pos []*Vocab, done chan<- bool) {
-	for _, vocab := range pos {
-		if termsInfo[idx].Term != vocab.Word {
+func modifyTfidfId(idx int, termsInfo []*Info, posMap map[string]*Vocab) {
+	term := termsInfo[idx].Term
+	found := false
+	for _, vocab := range pos { // Use original pos array for exact same behavior
+		if term != vocab.Word {
 			termsInfo[idx].Tfidf += termsInfo[idx].Tfidf * modifier["nama"]
+			found = true
 			break
 		}
-		if termsInfo[idx].Term == vocab.Word {
-			// go vet complains if we use this form
-			// if vocab.Type != "lain-lain" || vocab.Type != "pronomina" || vocab.Type != "interjeksi" || vocab.Type != "preposisi" {
-			// 	termsInfo[idx].Tfidf += termsInfo[idx].Tfidf * modifier[vocab.Type]
-			// }
+		if term == vocab.Word {
+			// Apply the exact same logic as original
 			if vocab.Type != "lain-lain" {
 				termsInfo[idx].Tfidf += termsInfo[idx].Tfidf * modifier[vocab.Type]
 			}
@@ -259,10 +290,14 @@ func modifyTfidfId(idx int, termsInfo []*Info, pos []*Vocab, done chan<- bool) {
 			if vocab.Type != "preposisi" {
 				termsInfo[idx].Tfidf += termsInfo[idx].Tfidf * modifier[vocab.Type]
 			}
+			found = true
 			break
 		}
 	}
-	done <- true
+	// If word not found in POS dictionary at all
+	if !found {
+		termsInfo[idx].Tfidf += termsInfo[idx].Tfidf * modifier["nama"]
+	}
 }
 
 type Info struct {
@@ -282,121 +317,110 @@ func GetTags(text string, num int) []*Info {
 	createSentencesChan := make(chan [][]string)
 	defer close(rmStopWordsChan)
 	defer close(createSentencesChan)
-	go removeStopWords(seq, stopWords, rmStopWordsChan)
+	go removeStopWords(seq, stopWordsMap, rmStopWordsChan)
 	go createSentences(text, createSentencesChan)
 	sens := <-createSentencesChan
 	seq = <-rmStopWordsChan
 	// end
 	termsCount := float64(len(flatten(sens)))
 
-	// More concurrency below
+	// Use worker pools for better concurrency
+	numWorkers := 4
+	if len(seq) < numWorkers {
+		numWorkers = len(seq)
+	}
 
-	// original idf function
-	// var termsInfo []*Info
-	// for _, term := range seq {
-	// find idf of each term by counting word occurence first
-	// count := 0.0
-	// for _, sen := range sens {
-	// 	found := false
-	// 	for _, word := range sen {
-	// 		if term == word {
-	// 			found = true
-	// 		}
-	// 	}
-	// 	if found {
-	// 		count++
-	// 	}
-	// }
-	// idf := math.Log(termsCount / count)
-	// termsInfo = append(termsInfo, &Info{term, idf, 0.0, 0.0})
-	// }
-
-	// Parallelize the original function
-	doneChan := make(chan bool, len(seq))
-	defer close(doneChan)
+	// Parallel IDF calculation with worker pool
 	termsInfo := make([]*Info, len(seq))
-	for i, term := range seq {
-		go findIdf(i, termsInfo, sens, termsCount, term, doneChan)
-	}
-	for range termsInfo {
-		<-doneChan
-	}
-	//
+	idfJobs := make(chan int, len(seq))
+	idfDone := make(chan bool, numWorkers)
 
-	// original tf-idf function
-	// find each word their tf-idf
-	// for i, term := range termsInfo {
-	// 	var count float64
-	// 	for _, sen := range sens {
-	// 		for _, word := range sen {
-	// 			word = sanitizeWord(word)
-	// 			if term.Term == word {
-	// 				count++
-	// 			}
-	// 		}
-	// 	}
-	// 	termsInfo[i].Tf = count / termsCount
-	// 	termsInfo[i].Tfidf = termsInfo[i].Tf * term.Idf
-	// }
+	// Start IDF workers
+	for w := 0; w < numWorkers; w++ {
+		go func() {
+			for idx := range idfJobs {
+				findIdf(idx, termsInfo, sens, termsCount, seq[idx])
+			}
+			idfDone <- true
+		}()
+	}
 
-	// parallelized
-	for i, _ := range termsInfo {
-		go findTfidf(i, termsInfo, termsCount, sens, doneChan)
+	// Send jobs
+	for i := range seq {
+		idfJobs <- i
 	}
-	for range termsInfo {
-		<-doneChan
+	close(idfJobs)
+
+	// Wait for workers to complete
+	for i := 0; i < numWorkers; i++ {
+		<-idfDone
 	}
-	//
+
+	// Parallel TF-IDF calculation with worker pool
+	tfidfJobs := make(chan int, len(termsInfo))
+	tfidfDone := make(chan bool, numWorkers)
+
+	// Start TF-IDF workers
+	for w := 0; w < numWorkers; w++ {
+		go func() {
+			for idx := range tfidfJobs {
+				findTfidf(idx, termsInfo, termsCount, sens)
+			}
+			tfidfDone <- true
+		}()
+	}
+
+	// Send jobs
+	for i := range termsInfo {
+		tfidfJobs <- i
+	}
+	close(tfidfJobs)
+
+	// Wait for workers to complete
+	for i := 0; i < numWorkers; i++ {
+		<-tfidfDone
+	}
 
 	if lang == "id" {
-		// original modifier function
-		// for i, term := range termsInfo {
-		// 	for _, vocab := range pos {
-		// 		if term.Term != vocab.Word {
-		// 			termsInfo[i].Tfidf += termsInfo[i].Tfidf * modifier["nama"]
-		// 			break
-		// 		}
-		// 		if vocab.Word == term.Term {
-		// 			if vocab.Type != "lain-lain" || vocab.Type != "pronomina" || vocab.Type != "interjeksi" || vocab.Type != "preposisi" {
-		// 				termsInfo[i].Tfidf += termsInfo[i].Tfidf * modifier[vocab.Type]
-		// 				break
-		// 			}
-		// 			break
-		// 		}
-		// 	}
-		// }
+		// Parallel Indonesian POS modification with worker pool
+		posJobs := make(chan int, len(termsInfo))
+		posDone := make(chan bool, numWorkers)
 
-		// paralellized modifier function
-		for i, _ := range termsInfo {
-			go modifyTfidfId(i, termsInfo, pos, doneChan)
+		// Start POS workers
+		for w := 0; w < numWorkers; w++ {
+			go func() {
+				for idx := range posJobs {
+					modifyTfidfId(idx, termsInfo, posMap)
+				}
+				posDone <- true
+			}()
 		}
-		for range termsInfo {
-			<-doneChan
+
+		// Send jobs
+		for i := range termsInfo {
+			posJobs <- i
 		}
-		//
+		close(posJobs)
+
+		// Wait for workers to complete
+		for i := 0; i < numWorkers; i++ {
+			<-posDone
+		}
 	}
-	// sort descending by tfidf
-	for i, v := range termsInfo {
-		j := i - 1
-		for j >= 0 && termsInfo[j].Tfidf < v.Tfidf {
-			termsInfo[j+1] = termsInfo[j]
-			j -= 1
-		}
-		termsInfo[j+1] = v
-	}
+
+	// Sort only once using sort.SliceStable (remove the insertion sort)
+	sort.SliceStable(termsInfo, func(i, j int) bool {
+		return termsInfo[i].Tfidf > termsInfo[j].Tfidf
+	})
+
 	// out of range error guard
 	if num >= len(termsInfo) {
 		num = len(termsInfo)
 	}
-	// sort from highest tfidf first
-	sort.SliceStable(termsInfo, func(i, j int) bool {
-		return termsInfo[j].Tfidf < termsInfo[i].Tfidf
-	})
+
 	// return only N number of tags
 	result := make([]*Info, num)
 	copy(result, termsInfo[:num])
-	// empty termsInfo
-	termsInfo = []*Info{}
 	return result
 }
 
@@ -464,17 +488,11 @@ func uniqSentences(sentences [][]string) [][]string {
 	return unique
 }
 
-func removeStopWords(seq []string, StopWords []string, rmStopWordsChan chan<- []string) {
-	var res []string
+func removeStopWords(seq []string, stopWordsMap map[string]bool, rmStopWordsChan chan<- []string) {
+	// Pre-allocate result slice with estimated capacity
+	res := make([]string, 0, len(seq))
 	for _, v := range seq {
-		stopWord := false
-		for _, x := range StopWords {
-			if v == x {
-				stopWord = true
-				break
-			}
-		}
-		if !stopWord {
+		if !stopWordsMap[v] {
 			res = append(res, v)
 		}
 	}
