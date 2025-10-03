@@ -574,13 +574,21 @@ func createSentences(text string, createSentencesChan chan<- [][]string) {
 			}, word)
 			// sanitize them FIX 2
 			word = sanitizeWord(word)
-			sentence = append(sentence, word)
-			sentences = append(sentences, sentence)
+			// Skip empty strings
+			if word != "" {
+				sentence = append(sentence, word)
+			}
+			if len(sentence) > 0 {
+				sentences = append(sentences, sentence)
+			}
 			sentence = []string{}
 		} else {
 			// sanitize them FIX 2
 			word = sanitizeWord(word)
-			sentence = append(sentence, word)
+			// Skip empty strings
+			if word != "" {
+				sentence = append(sentence, word)
+			}
 		}
 	}
 	if len(sentence) > 0 {
@@ -616,7 +624,8 @@ func removeStopWords(seq []string, stopWordsMap map[string]bool, rmStopWordsChan
 	// Pre-allocate result slice with estimated capacity
 	res := make([]string, 0, len(seq))
 	for _, v := range seq {
-		if !stopWordsMap[v] {
+		// Skip empty strings and stop words
+		if v != "" && !stopWordsMap[v] {
 			res = append(res, v)
 		}
 	}
@@ -637,7 +646,32 @@ func sanitizeWord(word string) string {
 		prev = r
 		return r
 	}, word)
+
+	// Exclude pure numbers from tagging
+	if word != "" && isNumeric(word) {
+		return ""
+	}
+
 	return word
+}
+
+// isNumeric checks if a string contains only digits (and optionally hyphens for number ranges)
+func isNumeric(s string) bool {
+	if s == "" {
+		return false
+	}
+
+	hasDigit := false
+	for _, r := range s {
+		if unicode.IsDigit(r) {
+			hasDigit = true
+		} else if r != '-' {
+			// If any character other than digit or hyphen, it's not a pure number
+			return false
+		}
+	}
+
+	return hasDigit
 }
 
 func createSeqDict(dict map[string]int) []string {
@@ -674,7 +708,10 @@ func createDictionary(text string) map[string]int {
 	dict := make(map[string]int)
 	i := 1
 	for _, word := range words {
-		if dict[word] == 0 {
+		// Sanitize the word to exclude numbers
+		word = sanitizeWord(word)
+		// Skip empty strings
+		if word != "" && dict[word] == 0 {
 			dict[word] = i
 			i++
 		}
