@@ -5,6 +5,7 @@ package tek
 
 import (
 	"math"
+	"runtime"
 	"sort"
 	"strings"
 	"unicode"
@@ -68,6 +69,48 @@ var indonesianStopWords []string = []string{
 	"ya",
 	"tidak",
 	"bukan",
+	"mengalami",
+	"pergi",
+	"dapat",
+	"bisa",
+	"melakukan",
+	"membuat",
+	"menjadi",
+	"terjadi",
+	"memberikan",
+	"memiliki",
+	"menggunakan",
+	"mengatakan",
+	"mendapatkan",
+	"menjalankan",
+	"melihat",
+	"mendapat",
+	"memberi",
+	"menerapkan",
+	"melakukan",
+	"mengambil",
+	"menuju",
+	"terhadap",
+	"sebagai",
+	"oleh",
+	"karena",
+	"saat",
+	"selain",
+	"tersebut",
+	"yaitu",
+	"yakni",
+	"ialah",
+	"bahwa",
+	"dimana",
+	"kemudian",
+	"setelah",
+	"sebelum",
+	"sejak",
+	"hingga",
+	"sampai",
+	"daripada",
+	"sering",
+	"kerap",
 }
 var englishStopWords []string = []string{
 	"a",
@@ -152,22 +195,95 @@ var englishStopWords []string = []string{
 	"hadnt",
 	"isnt",
 	"etc",
-	"for",
 	"i",
 	"or",
 	"of",
-	"on",
 	"other",
 	"others",
 	"so",
 	"than",
-	"that",
 	"though",
 	"to",
 	"too",
 	"they",
 	"through",
 	"until",
+	"go",
+	"went",
+	"going",
+	"gone",
+	"came",
+	"coming",
+	"get",
+	"getting",
+	"see",
+	"saw",
+	"seeing",
+	"seen",
+	"know",
+	"knew",
+	"knowing",
+	"known",
+	"take",
+	"took",
+	"taking",
+	"taken",
+	"give",
+	"gave",
+	"giving",
+	"given",
+	"make",
+	"made",
+	"making",
+	"can",
+	"could",
+	"may",
+	"might",
+	"must",
+	"shall",
+	"should",
+	"being",
+	"been",
+	"do",
+	"doing",
+	"done",
+	"say",
+	"said",
+	"saying",
+	"tell",
+	"told",
+	"telling",
+	"ask",
+	"asked",
+	"asking",
+	"work",
+	"worked",
+	"working",
+	"seem",
+	"seemed",
+	"seeming",
+	"leave",
+	"left",
+	"leaving",
+	"call",
+	"called",
+	"calling",
+	"try",
+	"tried",
+	"trying",
+	"need",
+	"needed",
+	"needing",
+	"feel",
+	"felt",
+	"feeling",
+	"become",
+	"became",
+	"becoming",
+	"experience",
+	"experienced",
+	"experiencing",
+	"experiences",
 }
 
 var lang string = "en"
@@ -309,6 +425,12 @@ type Info struct {
 
 // The main method of this package, return a slice of *Info struct, sorted by their weight descending.
 func GetTags(text string, num int) []*Info {
+	return GetTagsWithWorkers(text, num, runtime.NumCPU())
+}
+
+// GetTagsWithWorkers allows specifying the number of workers for concurrent processing.
+// If numWorkers is 0 or negative, it defaults to the number of available CPU cores.
+func GetTagsWithWorkers(text string, num int, numWorkers int) []*Info {
 	// sequential ops, cannot go parallel
 	dict := createDictionary(text)
 	seq := createSeqDict(dict)
@@ -325,7 +447,9 @@ func GetTags(text string, num int) []*Info {
 	termsCount := float64(len(flatten(sens)))
 
 	// Use worker pools for better concurrency
-	numWorkers := 4
+	if numWorkers <= 0 {
+		numWorkers = runtime.NumCPU()
+	}
 	if len(seq) < numWorkers {
 		numWorkers = len(seq)
 	}
