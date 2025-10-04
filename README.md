@@ -2,6 +2,7 @@
 ### A golang package to get tags of an article
 ----------------------------------------------
 [![GoDoc](https://godoc.org/github.com/didasy/tek?status.svg)](https://godoc.org/github.com/didasy/tek)
+[![Coverage Status](https://coveralls.io/repos/github/didasy/tek/badge.svg?branch=feat/perf%0Amaster)](https://coveralls.io/github/didasy/tek?branch=feat/perf%0Amaster)
 
 ### Installation
 `go get github.com/didasy/tek`

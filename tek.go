@@ -105,6 +105,122 @@ var indonesianStopWords []string = []string{
 
 	// Common Indonesian modal particles
 	"lah", "kah", "tah", "dong", "kan", "toh", "kok", "sih", "nih", "tuh", "deh", "yah", "yuk", "ayo", "mari", "silakan", "pergilah", "datanglah",
+
+	// EXPANDED STOP WORDS - Additional comprehensive list
+
+	// Additional common function words
+	"berikutnya", "sebelumnya", "selanjutnya", "berikut", "bermacam-macam", "berlainan", "serupa", "sama", "beda",
+
+	// Extended prepositions and locational words
+	"sepanjang", "melalui", "bersama", "mengenai", "seputar", "berkaitan", "terkait",
+
+	// Additional temporal expressions
+	"kemudian", "selanjutnya", "sewaktu", "sepanjang", "setiap", "masing-masing", "berturut-turut", "berurutan", "sesekali",
+
+	// Indonesian-specific particles and discourse markers
+	"toh", "wong", "lha", "gini", "gitu", "gimana", "begini", "begitu", "sekali",
+
+	// Extended question and relative words
+	"bagaimanakah", "siapakah", "apakah", "dimanakah", "kapanpun", "dimanapun", "siapapun", "apapun",
+
+	// Additional negation and affirmation words
+	"belum", "jangan", "tak usah", "tidak usah", "sudahlah", "tentulah", "pastilah",
+
+	// Extended conjunctions and connectors
+	"meskipun", "kendatipun", "biarpun", "sekalipun", "selama", "semenjak", "sejak", "hingga", "sampai",
+
+	// Common colloquial and informal words
+	"gitu", "gini", "gimana", "bener", "banget", "dong", "kan", "lah", "deh",
+
+	// Additional demonstrative and reference words
+	"yakni", "yaitu", "ialah",
+
+	// Extended numerical and quantitative words
+	"beberapa", "segala", "berbagai", "macam-macam", "jenis-jenis", "aneka", "pelbagai",
+
+	// Common academic and formal words
+	"terkait", "berkaitan", "mengenai", "menyangkut", "sehubungan", "berkenaan",
+
+	// Additional verbal function words
+	"melakukan", "menjalankan", "mengimplementasikan", "mengaplikasikan", "memproses", "mengolah",
+
+	// Indonesian-specific cultural and contextual words
+	"tolong", "mohon", "silakan", "mari", "ayo", "yuk",
+
+	// Common Indonesian abbreviations
+	"dll", "dsb", "ybs",
+
+	// Technical and academic function words
+	"data", "informasi", "sistem", "proses", "metode", "analisis", "hasil", "penelitian",
+
+	// Time-specific additional words
+	"pagi", "siang", "sore", "malam", "dini hari", "tengah malam",
+
+	// Extended place-related words
+	"sekitar", "sekeliling",
+
+	// Common Indonesian idiomatic expressions
+	"pada dasarnya", "pada umumnya", "pada hakikatnya", "intinya", "singkatnya",
+
+	// Additional connector words
+	"sebab", "akibat", "dampak", "pengaruh", "efek", "imbas", "oleh karena itu", "oleh sebab itu", "maka", "maka dari itu", "karenanya",
+
+	// Additional discourse adverbs
+	"umumnya", "biasanya", "pada umumnya", "lazimnya", "pada dasarnya", "pada hakikatnya", "sering", "kerap", "acap", "kerapkali", "seringkali",
+
+	// Additional prepositions
+	"terhadap", "mengenai", "seputar", "berkaitan", "terkait", "menyangkut", "sehubungan", "berkenaan", "mengenai", "tentang", "soal", "urusan", "hal", "masalah",
+
+	// Additional temporal words
+	"setiap", "masing-masing", "berturut-turut", "berurutan", "sesekali", "sewaktu", "sepanjang", "selama", "semenjak", "sedari",
+
+	// Additional quantity words
+	"aneka", "pelbagai", "berbagai", "macam-macam", "jenis-jenis", "segala", "beberapa", "pelbagai", "aneka ragam", "bagai macam",
+
+	// Additional modal words
+	"mestinya", "hendaknya", "seharusnya", "sepatutnya", "sepantasnya", "seyogyanya", "alangkah", "betapa",
+
+	// Additional colloquial words
+	"bener", "banget", "kok", "sih", "dong", "kan", "toh", "nih", "tuh", "deh", "yah", "gitu", "gini", "gimana", "begini", "begitu", "gituan",
+
+	// Additional formal words
+	"terkait", "berkaitan", "mengenai", "menyangkut", "sehubungan", "berkenaan", "terkait", "berkenaan", "sehubungan", "menyangkut", "mengenai", "mengenai", "seputar", "soal", "urusan", "hal", "masalah", "persoalan",
+
+	// Additional common verbs
+	"memberikan", "menggunakan", "mengatakan", "mendapatkan", "menjalankan", "melihat", "mendapat", "memberi", "mengambil", "menuju", "mengalami", "melakukan", "membuat", "menjadi", "terjadi", "mengimplementasikan", "mengaplikasikan", "memproses", "mengolah",
+
+	// Additional particles
+	"lah", "kah", "tah", "dong", "kan", "toh", "kok", "sih", "nih", "tuh", "deh", "yah", "yuk", "ayo", "mari", "silakan", "pergilah", "datanglah",
+
+	// Additional time-related words
+	"tadi", "tadinya", "nanti", "besok", "kemarin", "lusa", "dulu", "dahulu", "sedang", "akan", "telah", "sudah", "masih", "belum", "pernah", "lagi", "sementara", "sewaktu", "ketika", "tatkala", "sekarang",
+
+	// Additional place-related words
+	"dalam", "luar", "atas", "bawah", "depan", "belakang", "samping", "tengah", "pinggir", "ujung", "sekitar", "sekeliling", "sepanjang", "melalui", "menurut", "bersama", "terhadap",
+
+	// Additional quantity words
+	"semua", "seluruh", "para", "segala", "berbagai", "macam", "jenis", "rupa", "banyak", "sedikit", "beberapa", "hampir", "kurang", "lebih", "paling", "sangat", "amat", "sekali", "cukup", "hanya", "saja", "melainkan", "selain", "kecuali",
+
+	// Additional certainty words
+	"mungkin", "barangkali", "tentu", "pasti", "jelas", "nyata", "yakin", "percaya", "rasa", "kira", "agak", "agaknya", "kira-kira", "kayaknya", "sepertinya", "mestinya", "hendaknya", "semestinya", "seharusnya", "sepatutnya",
+
+	// Additional connectors
+	"karena", "sebab", "akibat", "demi", "guna", "agar", "supaya", "jika", "jikalau", "apabila", "bilamana", "manakala", "walaupun", "meskipun", "kendati", "sekalipun", "biarpun", "meski", "sedangkan", "padahal", "daripada", "alih-alih", "justru", "malahan", "bahkan", "terlebih", "apalagi",
+
+	// Additional demonstrative words
+	"ini", "itu", "tersebut", "sini", "situ", "sana", "berikut", "berikutnya", "selanjutnya", "seterusnya", "kemudian", "lalu", "lantas", "langsung", "yakni", "yaitu", "ialah",
+
+	// Additional question words
+	"apa", "siapa", "mengapa", "kenapa", "bagaimana", "berapa", "kapan", "dimana", "manakah", "bila", "bagaimanakah", "siapakah", "apakah", "dimanakah", "kapanpun", "dimanapun", "siapapun", "apapun",
+
+	// Additional negation words
+	"tidak", "bukan", "jangan", "tak", "belum", "sudahlah", "tentulah", "pastilah", "tak usah", "tidak usah", "jangan", "janganlah",
+
+	// Additional auxiliary words
+	"dapat", "bisa", "akan", "mau", "ingin", "harus", "perlu", "mesti", "wajib", "boleh", "seharusnya", "sepatutnya", "mestinya", "hendaknya", "semestinya", "sepantasnya", "seyogyanya",
+
+	// Additional common expressions
+	"hal", "sesuatu", "segala", "macam", "jenis", "bentuk", "rupa", "kondisi", "keadaan", "situasi", "kedudukan", "posisi", "tempat", "lokasi", "area", "wilayah", "daerah", "pada dasarnya", "pada umumnya", "pada hakikatnya", "intinya", "singkatnya", "ringkasnya", "garis besarnya", "sekali lagi", "lagi-lagi", "berulang kali", "berkali-kali", "beberapa kali", "sekian",
 }
 
 // Comprehensive English stop words
@@ -201,6 +317,17 @@ var englishStopWords []string = []string{
 
 	// Work and career
 	"work", "job", "career", "profession", "occupation", "business", "company", "corporation", "organization", "institution", "agency", "department", "office", "factory", "shop", "store", "market", "industry", "trade", "commerce", "economy", "finance", "money", "cash", "currency", "dollar", "pound", "euro", "yen", "price", "cost", "expense", "budget", "income", "salary", "wage", "pay", "earn", "profit", "loss", "gain", "investment", "saving", "spending", "buying", "selling", "shopping", "purchase", "sale", "discount", "bargain", "deal", "offer", "contract", "agreement", "negotiation", "meeting", "conference", "presentation", "report", "document", "file", "record", "database", "computer", "technology", "internet", "website", "email", "phone", "call", "message", "communication", "conversation", "discussion", "argument", "debate", "dispute", "conflict", "resolution", "solution", "answer", "question", "problem", "issue", "challenge", "opportunity", "success", "failure", "achievement", "accomplishment", "goal", "objective", "target", "purpose", "mission", "vision", "strategy", "plan", "project", "task", "duty", "responsibility", "obligation", "commitment", "dedication", "effort", "attempt", "try", "performance", "result", "outcome", "consequence", "effect", "impact", "influence", "change", "development", "progress", "improvement", "growth", "expansion", "increase", "decrease", "reduction", "decline", "rise", "fall", "growth", "shrink", "expand", "contract",
+
+	// EXPANDED STOP WORDS - Additional comprehensive list
+
+	// Technical and scientific terms
+	"abstract", "acknowledge", "analysis", "analyze", "approach", "appropriate", "approximately", "aspect", "assess", "assessment", "assume", "assumption", "available", "basis", "brief", "case", "chapter", "chart", "clear", "clearly", "compare", "comparison", "concept", "concern", "concerning", "condition", "conduct", "consequently", "consider", "considerable", "consist", "consistent", "context", "contrast", "correspond", "data", "define", "definition", "definite", "demonstrate", "depart", "derive", "design", "determine", "device", "different", "dimension", "distinct", "distribute", "distribution", "diverse", "document", "domain", "due", "effect", "effective", "efficiency", "efficient", "element", "else", "energy", "enforce", "engage", "engine", "enhance", "enormous", "ensure", "enter", "entire", "environment", "equal", "equally", "error", "especially", "establish", "estimate", "evaluate", "event", "evident", "exactly", "example", "exceed", "except", "exist", "expand", "expect", "expensive", "experience", "experiment", "expert", "explain", "explore", "express", "extend", "extent", "factor", "feature", "field", "figure", "final", "follow", "following", "form", "formal", "former", "formula", "foundation", "function", "functional", "fundamental", "further", "future", "generate", "given", "goal", "grade", "group", "growth", "guideline", "hence", "however", "identify", "illustrate", "impact", "implement", "imply", "impose", "improve", "improvement", "include", "incorporate", "increase", "indicate", "individual", "inference", "influence", "information", "initial", "initiate", "injury", "input", "inquiry", "insert", "inside", "insight", "inspect", "instance", "institute", "institution", "instruction", "instrument", "insurance", "integrate", "intend", "intense", "interact", "interest", "interface", "intermediate", "internal", "interpret", "interval", "intervene", "introduce", "invest", "investigate", "investment", "involve", "issue", "item", "job", "journal", "justification", "lack", "large", "largely", "latter", "lead", "leadership", "learn", "lecture", "legal", "legislate", "less", "level", "library", "license", "life", "lifestyle", "limit", "link", "locate", "location", "logic", "logical", "long", "maintain", "major", "manage", "management", "mandate", "manual", "manufacture", "manufacturing", "margin", "mark", "market", "master", "match", "material", "matrix", "matter", "maximum", "means", "measure", "mechanism", "media", "mediate", "medium", "meet", "mention", "message", "method", "methodology", "metric", "micro", "might", "migration", "military", "million", "mind", "minimum", "minor", "model", "modify", "module", "monitor", "motivation", "multiple", "municipal", "museum", "music", "nation", "national", "natural", "nature", "negative", "network", "neutral", "nevertheless", "news", "nonetheless", "normal", "normally", "north", "notable", "note", "noteworthy", "notion", "novel", "nuclear", "objective", "observation", "observe", "obtain", "obvious", "occasion", "occur", "offer", "office", "official", "okay", "opening", "operate", "operation", "operational", "opinion", "opportunity", "opposite", "optimal", "option", "order", "ordinary", "organization", "organize", "orient", "origin", "original", "outcome", "output", "overall", "overlap", "overseas", "owner", "package", "page", "paragraph", "parameter", "parent", "part", "partial", "participate", "particular", "particularly", "partner", "passage", "passion", "passive", "past", "pattern", "pay", "payment", "pension", "people", "perceive", "percent", "perfect", "perform", "performance", "perhaps", "period", "permit", "persist", "person", "personal", "perspective", "phase", "phenomenon", "philosophy", "phone", "photo", "phrase", "physical", "pick", "picture", "piece", "place", "plan", "plane", "planning", "plastic", "plot", "plus", "point", "police", "policy", "political", "politics", "pool", "popular", "population", "portion", "portrait", "pose", "position", "positive", "possess", "possibility", "possible", "post", "potentially", "practical", "practice", "practitioner", "precede", "precedent", "precise", "precisely", "predict", "prefer", "preference", "preliminary", "premise", "premium", "prepare", "presence", "present", "president", "pressure", "presume", "previous", "price", "primary", "prime", "principal", "principle", "print", "prior", "priority", "private", "probably", "problem", "procedure", "proceed", "process", "produce", "product", "profile", "program", "progress", "project", "promote", "prompt", "proper", "property", "proposal", "prospect", "protect", "protocol", "psychology", "public", "publish", "purchase", "purpose", "pursue", "push", "quality", "query", "question", "quit", "quote", "radical", "range", "rate", "rather", "ratio", "rational", "reach", "read", "ready", "real", "reality", "realize", "reason", "recall", "receive", "recent", "recognition", "recommend", "record", "recover", "recruit", "refer", "reference", "reflect", "regime", "region", "register", "regular", "regulate", "regulation", "reinforce", "relate", "relation", "relationship", "relative", "release", "relevant", "reliability", "reliable", "relief", "religion", "reluctant", "remain", "remember", "remind", "remote", "remove", "repeat", "replace", "reply", "report", "represent", "republican", "request", "require", "research", "resemble", "residence", "resident", "resolve", "resource", "respond", "response", "responsibility", "rest", "restore", "retain", "retire", "retreat", "reveal", "revenue", "reverse", "review", "revise", "revolution", "reward", "rhythm", "rise", "risk", "robust", "role", "roman", "room", "root", "rough", "route", "routine", "row", "royal", "rural", "satisfy", "save", "scale", "scan", "schedule", "scheme", "scope", "score", "screen", "script", "search", "season", "seat", "second", "secret", "section", "sector", "secure", "seek", "seem", "segment", "seize", "select", "selection", "sell", "send", "senior", "sense", "sensitive", "sentence", "separate", "sequence", "series", "serious", "serve", "service", "session", "set", "setting", "settle", "seven", "shadow", "shape", "share", "sharp", "sheet", "shift", "shine", "ship", "shop", "short", "shot", "shoulder", "show", "side", "sight", "sign", "signal", "significance", "significance", "significant", "silence", "similar", "simple", "simulate", "simulation", "since", "single", "site", "situate", "skill", "skin", "slave", "sleep", "slide", "slight", "slightly", "slope", "slow", "small", "smart", "smile", "soil", "solar", "solid", "solution", "solve", "somebody", "somehow", "someone", "something", "sometime", "somewhere", "song", "sophisticated", "sorry", "sort", "sound", "source", "south", "space", "speak", "special", "specialist", "species", "specific", "specify", "spectrum", "spend", "spice", "spin", "split", "spokesperson", "sport", "staff", "stage", "stake", "stand", "standard", "start", "state", "statement", "station", "statistical", "statistics", "status", "steel", "stick", "still", "stock", "stomach", "stone", "stop", "store", "storm", "story", "straight", "strange", "strategic", "strategy", "stream", "street", "strength", "stress", "stretch", "strike", "string", "strip", "stroke", "strong", "structure", "struggle", "student", "study", "stuff", "style", "subject", "submit", "subsequent", "substance", "substantial", "succeed", "success", "successful", "succession", "such", "sudden", "sufficiently", "suggest", "suitable", "summary", "summer", "supply", "support", "suppose", "supreme", "sure", "surface", "surgeon", "surgery", "surprise", "surround", "survey", "survive", "suspect", "sustain", "swing", "switch", "symbol", "sympathetic", "sympathy", "system", "table", "tackle", "tactic", "tail", "take", "talent", "talk", "tank", "tape", "target", "task", "taste", "tax", "technical", "technique", "technology", "teen", "telephone", "telescope", "television", "tell", "temperature", "temporary", "tend", "tension", "tent", "term", "terminate", "terrible", "territory", "test", "testimony", "text", "texture", "theme", "theory", "therapy", "thereby", "therefore", "these", "thesis", "thick", "thing", "think", "third", "thorough", "though", "thought", "thousand", "threat", "three", "threshold", "thrill", "through", "throughout", "throw", "thumb", "thus", "ticket", "tiger", "tight", "time", "tiny", "title", "toast", "today", "together", "tomorrow", "tone", "tongue", "tonight", "tool", "tooth", "topic", "tornado", "total", "totally", "touch", "tough", "tour", "tourist", "toward", "tower", "town", "trace", "track", "trade", "traffic", "tragedy", "tragic", "trail", "train", "transfer", "transform", "transition", "translate", "transport", "travel", "treat", "treatment", "treaty", "tree", "trend", "trial", "triangle", "tribe", "trigger", "trim", "trip", "troop", "tropical", "trouble", "truck", "truly", "trust", "truth", "try", "tube", "tune", "turn", "tutor", "twelve", "twice", "twenty", "twist", "type", "typical", "ultimate", "unable", "uncertain", "uncle", "under", "undergo", "undergraduate", "underground", "underlie", "underlying", "undermine", "underneath", "understand", "undertake", "unemployment", "unexpected", "unfair", "unfold", "unfortunately", "uniform", "unify", "union", "unique", "unit", "unite", "university", "unknown", "unless", "unlike", "unlikely", "unlock", "unnecessary", "unpack", "unpleasant", "unreasonable", "unstable", "until", "unusual", "unveil", "update", "upgrade", "uphold", "upon", "upper", "urban", "urge", "usage", "use", "used", "useful", "user", "usual", "usually", "utility", "utilize", "utmost", "utter", "vacant", "vacation", "vague", "valid", "valley", "valuable", "value", "van", "variable", "variation", "varied", "variety", "various", "vary", "vast", "vehicle", "venture", "venue", "verbal", "verify", "version", "vertical", "very", "vessel", "veteran", "viable", "vibrant", "victim", "victory", "video", "view", "village", "violate", "violence", "violent", "virtually", "virtue", "virus", "visible", "vision", "visit", "visitor", "visual", "vital", "vivid", "vocabulary", "vocal", "voice", "volume", "voluntary", "volunteer", "vote", "voyage", "vulnerable", "wage", "wait", "walk", "wall", "want", "war", "warm", "warn", "wash", "waste", "watch", "water", "wave", "weak", "wealth", "weapon", "wear", "weather", "week", "weekend", "weekly", "weigh", "weight", "weird", "welcome", "welfare", "well", "west", "western", "whale", "whatsoever", "wheel", "whereas", "whereby", "wherein", "whether", "which", "whichever", "whichever", "whip", "whisper", "whistle", "white", "whoever", "whole", "wholesale", "whom", "whomsoever", "whose", "why", "wicked", "wide", "widely", "widespread", "widow", "width", "wife", "wild", "wilderness", "will", "willing", "win", "wind", "window", "wine", "wing", "winner", "winter", "wipe", "wire", "wisdom", "wise", "wish", "with", "withdraw", "within", "without", "witness", "wolf", "woman", "wonder", "wood", "wooden", "wool", "word", "work", "worker", "workforce", "workshop", "world", "worried", "worry", "worth", "would", "wound", "wrap", "wreckage", "wrestle", "wrist", "write", "writer", "writing", "written", "wrong", "yard", "year", "yellow", "yes", "yesterday", "yet", "yield", "young", "younger", "yourself", "youth", "zero", "zone",
+
+	// Modern internet and digital terms
+	"click", "scroll", "swipe", "tap", "download", "upload", "refresh", "link", "url", "http", "https", "www", "web", "site", "page", "post", "blog", "vlog", "tweet", "retweet", "like", "share", "comment", "subscribe", "follow", "unfollow", "block", "mute", "notification", "dm", "pm", "tag", "hashtag", "trending", "viral", "meme", "gif", "emoji", "sticker", "filter", "story", "reel", "shorts", "live", "stream", "podcast", "playlist", "algorithm", "feed", "timeline", "profile", "bio", "avatar", "handle", "username", "password", "login", "logout", "signup", "register", "verify", "verification", "auth", "oauth", "captcha", "cookie", "cache", "history", "bookmark", "tab", "window", "browser", "chrome", "safari", "firefox", "edge", "search", "query", "result", "keyword", "seo", "ads", "popup", "banner", "spam", "phishing", "malware", "virus", "hack", "hacker", "cyber", "data", "analytics", "metrics", "stats", "dashboard", "report", "export", "import", "sync", "backup", "cloud", "server", "host", "domain", "ip", "vpn", "proxy", "firewall", "encryption", "security", "privacy", "terms", "conditions", "policy", "guidelines", "rules", "community", "forum", "thread", "reply", "edit", "delete", "archive", "pin", "sticky", "lock", "unlock", "ban", "suspend", "appeal", "mod", "admin", "op", "user", "member", "guest", "anonymous", "anon",
+
+	// Additional contractions and informal forms
+	"ain't", "gonna", "gotta", "kinda", "sorta", "lotsa", "gotcha", "yep", "yup", "nah", "uh-huh", "mm-hmm", "uh-uh", "coulda", "shoulda", "woulda", "musta", "mighta", "lovin'", "wan", "finna", "tryna", "kinda", "sorta", "lotsa", "gotta", "gonna", "wanna", "hafta", "sup", "yo", "bruh", "fam", "lit", "savage", "bae", "ghosting", "flex", "stan", "clapback", "shade", "drag", "salty", "triggered", "woke", "basic", "extra", "gucci", "bet", "cap", "no cap", "drip", "rizz", "iykyk", "ngl", "fr", "frfr", "sus", "chad", "simp", "poggers", "dank", "cringe", "based", "redpilled", "wojak", "pepe", "doge", "stonks", "tendies", "fud", "hodl", "gm", "gn", "wagmi", "ngmi", "lol", "omg", "btw", "idk", "tbh", "smh", "rofl", "lmao", "stfu", "gtfo", "fyi", "asap", "aka", "tgif", "hbd", "hmu", "wyd", "wfh", "fomo", "yolo", "swag", "yass", "slay", "periodt", "sis", "bro", "dude", "bruh", "oof", "yeet", "vibe", "vibes", "iykyk", "ngl", "fr", "frfr", "no cap", "bet", "sus", "chad", "simp", "poggers", "dank", "meme", "cringe", "based", "redpilled", "wojak", "pepe", "doge", "stonks", "tendies", "fud", "hodl", "diamond hands", "paper hands", "ape", "gm", "gn", "wagmi", "ngmi", "tldr", "imho", "ama", "nsfw", "tldr", "imho", "ama", "nsfw", "lol", "omg", "btw", "idk", "tbh", "smh", "rofl", "lmao", "stfu", "gtfo", "fyi", "asap", "aka", "tgif", "hbd", "hmu", "wyd", "wfh", "fomo", "yolo", "swag", "yass", "slay", "periodt", "sis", "bro", "dude", "bruh", "oof", "yeet", "vibe", "vibes",
 }
 
 var lang string = "en"
